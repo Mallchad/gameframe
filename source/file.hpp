@@ -1,7 +1,7 @@
 #pragma once
 
 #include "code_helpers.h"
-#include "include_core.h"
+#include "core.hpp"
 
 #include <cstdio>
 #include <iostream>
@@ -9,6 +9,19 @@
 #include <filesystem>
 
 #include "math.hpp"
+
+// UNFINISHED
+fpath
+FUNCTION linux_search_file( std::vector<fpath> search_paths )
+{
+// Linux only call
+    // Always use the executable parent directory as search reference point
+    path self_directory = canonical( "/proc/self/exe" );
+    self_directory = self_directory.parent_path();
+
+    // Use search paths instead its more robust, initially just build project root
+    path location = global_database::get_primary()->project_root / path( target );
+}
 
 byte_buffer
 FUNCTION intern_file( fpath target )
@@ -18,17 +31,10 @@ FUNCTION intern_file( fpath target )
     FILE* tmp = nullptr;
     fuint32 tmp_filesize = 0;
 
-    // Linux only call
-    // Always use the executable parent directory as search reference point
-    path self_directory = canonical( "/proc/self/exe" );
-    self_directory = self_directory.parent_path();
-    
-    // Use search paths instead its more robust, initially just build project root
-    path location = global_database::get_primary()->project_root / path( target );
-    tmp = fopen( location.c_str(), "r" );
+    tmp = fopen( target.c_str(), "r" );
     if (tmp == nullptr)
     {
-        std::cout << "Failed to open file: " << location << "\n";
+        std::cout << "Failed to open file: " << target << "\n";
         std::cout << "Failed to open file: " << global_database::get_primary()->project_root << "\n";
         return out;
     }
